@@ -24,43 +24,20 @@ client.on("message", function(message) {
 	  let myRole = message.guild.roles.cache.find(role => role.name === name);
     if (!myRole) {
 	    message.guild.roles.create({data: {name: name, permissions: []}}).then(myRole => {
-        message.guild.channels.create(name, {
-          type: 'category',
-          position: 1,
+        message.guild.channels.create(name, {type: 'category', position: 1,
           permissionOverwrites: [
-              {
-                id: message.guild.id,
-                deny: ['VIEW_CHANNEL']
-              },
-              {
-                id: myRole.id,
-                allow: ['VIEW_CHANNEL']
-              }
-              ]
+            {id: message.guild.id, deny: ['VIEW_CHANNEL']},
+            {id: myRole.id, allow: ['VIEW_CHANNEL']}
+          ]
         }).then(cat => {
-          message.guild.channels.create('Description', {
-              type: 'text',
-              parent: cat
-          })
-          message.guild.channels.create('Compte Rendu', {
-            type: 'text',
-            parent: cat
-          })
-          message.guild.channels.create('Discussion', {
-            type: 'text',
-            parent: cat
-          })
-          message.guild.channels.create('Rendez vous', {
-            type: 'text',
-            parent: cat
-          })
-          message.guild.channels.create('Vocal', {
-            type: "voice",
-            parent: cat
-          })
+          message.guild.channels.create('Description', {type: 'text', parent: cat})
+          message.guild.channels.create('Compte Rendu', {type: 'text', parent: cat})
+          message.guild.channels.create('Discussion', {type: 'text', parent: cat})
+          message.guild.channels.create('Rendez vous', {type: 'text', parent: cat})
+          message.guild.channels.create('Vocal', {type: "voice", parent: cat})
         });
-        });
-        message.channel.send(`Projet ${args[0]} créer avec succés`);
+      });
+      message.channel.send(`Projet ${args[0]} créer avec succés`);
     } else {
       message.channel.send(`le Projet ${args[0]} existe déjà`);
     }
