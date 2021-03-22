@@ -49,13 +49,10 @@ client.on("message", function(message) {
     let myRole = message.guild.roles.cache.find(role => role.name === name);
     if (myRole) {
       let myCategory = message.guild.channels.cache.find(channel => channel.name === name);
-      message.guild.channels.cache.find(channel => channel.name === 'description', channel => channel.parent === myCategory).delete();
-	    message.guild.channels.cache.find(channel => channel.name === 'compte-rendu', channel => channel.parent === myCategory).delete();
-	    message.guild.channels.cache.find(channel => channel.name === 'discussion', channel => channel.parent === myCategory).delete();
-      message.guild.channels.cache.find(channel => channel.name === 'rendez-vous', channel => channel.parent === myCategory).delete();
-      message.guild.channels.cache.find(channel => channel.name === 'Vocal', channel => channel.parent === myCategory).delete();
+      myCategory.children.forEach(channel => channel.delete());
       myCategory.delete();
       myRole.delete();
+      message.channel.send(`Projet ${args[0]} suprimé avec succés`);
     } else {
       message.channel.send(`le Projet ${args[0]} n'existe pas`);
     }
