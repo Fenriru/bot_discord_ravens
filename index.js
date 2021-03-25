@@ -21,6 +21,7 @@ client.on("message", function(message) {
 
   else if (command === "create_project") {
     const name = ("Projet: ".concat(`${args[0]}`)).toUpperCase();
+    message.delete();
 	  let myRole = message.guild.roles.cache.find(role => role.name === name);
     if (!myRole) {
 	    message.guild.roles.create({data: {name: name, permissions: []}}).then(myRole => {
@@ -37,7 +38,7 @@ client.on("message", function(message) {
           message.guild.channels.create('Vocal', {type: "voice", parent: cat})
         });
       });
-      message.channel.send(`Projet ${args[0]} créer avec succés`);
+      message.channel.send(`Projet ${args[0]} créé avec succès`);
     } else {
       message.channel.send(`le Projet ${args[0]} existe déjà`);
     }
@@ -52,7 +53,7 @@ client.on("message", function(message) {
       myCategory.children.forEach(channel => channel.delete());
       myCategory.delete();
       myRole.delete();
-      message.channel.send(`Projet ${args[0]} suprimé avec succés`);
+      message.channel.send(`Projet ${args[0]} supprimé avec succès`);
     } else {
       message.channel.send(`le Projet ${args[0]} n'existe pas`);
     }
