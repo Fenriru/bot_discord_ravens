@@ -6,7 +6,7 @@ const act = [`prefix : ${prefix}`, 'BDE RAVENS']
 const client = new Discord.Client();
 
 client.on("message", async function(message) {
-  //if (message.author.bot) return;
+  if (message.author.bot) return;
   if (!message.content.startsWith(prefix)) return;
 
 
@@ -68,14 +68,22 @@ client.on("message", async function(message) {
     const channel = message.channel;
     message.delete();
     if (args.length %2 != 0 || args.length == 0) {
-      channel.send('wrong nbr of args: use *reaction_bot [emoji role_name]+');
+      channel.send(`wrong nbr of args: use ${prefix}reaction_bot [emoji role_name]+`);
     } else {
       msg = "";
       emojis = [];
       roles = [];
       for (i = 0; args[i]; i+= 2) {
         emojis[i/2] = args[i];
+        emo_id = args[i].match(/[0-9]*/);
+        if (emo_id && emo_id.index != 0) {
+          emojis[i/2] = Object.values(emo_id)[0];
+        }
         roles[i/2] = message.guild.roles.cache.find(role => role.name === args[i+1]);
+        if (!roles[i/2]) {
+          channel.send(`command failed: ${args[i+1]} does'nt exist`);
+          return
+        }
         msg = msg + args[i] + " : " + args[i+1] + "\n";
       }
       let embed = new Discord.MessageEmbed()
@@ -84,7 +92,10 @@ client.on("message", async function(message) {
             .setDescription(msg);
       channel.send(embed).then(post => {
         emojis.forEach(elem => {
-          post.react(elem);
+          post.react(elem).catch(error => function () {
+            post.delete().then(channel.send(`command failed:can't react with ${elem}`));
+            return;
+          });
         });
       });
       client.on('messageReactionAdd', async (reaction, user) => {
@@ -102,7 +113,6 @@ client.on("message", async function(message) {
             }
           }
           if (can) {
-            console.log(roles[i]);
             await reaction.message.guild.members.cache.get(user.id).roles.add(roles[i]);
           }
         } else {
